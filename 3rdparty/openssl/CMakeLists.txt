@@ -1472,7 +1472,9 @@ add_enclave_library(opensslssl_3 STATIC ${OPENSSL_3_SSL_LIB_SOURCE})
 
 enclave_include_directories(
   opensslcrypto PRIVATE $<BUILD_INTERFACE:${OPENSSL_BUILD_INCLUDES}>
-  $<BUILD_INTERFACE:${OPENSSL_DIR}> $<BUILD_INTERFACE:${OPENSSL_DIR}/include>)
+  $<BUILD_INTERFACE:${OPENSSL_DIR}> $<BUILD_INTERFACE:${OPENSSL_DIR}/include> 
+  $<BUILD_INTERFACE:${OPENSSL_DIR}/providers/common/include>
+  $<BUILD_INTERFACE:${OPENSSL_DIR}/providers/implementations/include>)
 
 enclave_include_directories(
   opensslcrypto_3
@@ -1637,7 +1639,7 @@ endif ()
 
 # Exclude path-specific definitions from the build information.
 list(APPEND OPENSSL_COMPILE_DEFINES ${OPENSSL_BUILD_INFO}
-     OPENSSLDIR="${OPENSSL_BUILD}" ENGINESDIR="${OPENSSL_BUILD}/engines-1.1")
+     OPENSSLDIR="${OPENSSL_BUILD}" ENGINESDIR="${OPENSSL_BUILD}/engines-3" MODULESDIR="${OPENSSL_BUILD}/ossl-modules")
 
 list(APPEND OPENSSL_3_COMPILE_DEFINES ${OPENSSL_BUILD_INFO}
      OPENSSLDIR="${OPENSSL_BUILD}" ENGINESDIR="${OPENSSL_BUILD}/engines-3"

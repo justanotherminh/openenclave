@@ -13,21 +13,45 @@ add_custom_command(
 # Helper library for running openssl test (the libtestutil.a from openssl).
 add_enclave_library(
   openssl-support
-  ${OPENSSL_DIR}/test/testutil/basic_output.c
-  ${OPENSSL_DIR}/test/testutil/cb.c
-  ${OPENSSL_DIR}/test/testutil/driver.c
-  ${OPENSSL_DIR}/test/testutil/format_output.c
-  ${OPENSSL_DIR}/test/testutil/main.c
-  ${OPENSSL_DIR}/test/testutil/output_helpers.c
-  ${OPENSSL_DIR}/test/testutil/random.c
-  ${OPENSSL_DIR}/test/testutil/stanza.c
-  ${OPENSSL_DIR}/test/testutil/tap_bio.c
-  ${OPENSSL_DIR}/test/testutil/test_cleanup.c
+  ${OPENSSL_DIR}/apps/lib/app_libctx.c
+  ${OPENSSL_DIR}/apps/lib/app_params.c
+  ${OPENSSL_DIR}/apps/lib/app_provider.c
+  ${OPENSSL_DIR}/apps/lib/app_rand.c
+  ${OPENSSL_DIR}/apps/lib/app_x509.c
+  ${OPENSSL_DIR}/apps/lib/apps_ui.c
+  ${OPENSSL_DIR}/apps/lib/columns.c
+  ${OPENSSL_DIR}/apps/lib/engine.c
+  ${OPENSSL_DIR}/apps/lib/engine_loader.c
+  ${OPENSSL_DIR}/apps/lib/fmt.c
+  ${OPENSSL_DIR}/apps/lib/http_server.c
+  ${OPENSSL_DIR}/apps/lib/names.c
+  ${OPENSSL_DIR}/apps/lib/opt.c
+  ${OPENSSL_DIR}/apps/lib/s_cb.c
+  ${OPENSSL_DIR}/apps/lib/s_socket.c
   ${OPENSSL_DIR}/test/testutil/tests.c
+  ${OPENSSL_DIR}/test/testutil/tu_local.h
+  ${OPENSSL_DIR}/test/testutil/test_cleanup.c
+  ${OPENSSL_DIR}/test/testutil/stanza.c
+  ${OPENSSL_DIR}/test/testutil/format_output.c
+  ${OPENSSL_DIR}/test/testutil/basic_output.c
   ${OPENSSL_DIR}/test/testutil/testutil_init.c
+  ${OPENSSL_DIR}/test/testutil/load.c
+  ${OPENSSL_DIR}/test/testutil/provider.c
+  ${OPENSSL_DIR}/test/testutil/cb.c
+  ${OPENSSL_DIR}/test/testutil/random.c
+  ${OPENSSL_DIR}/test/testutil/fake_random.c
+  ${OPENSSL_DIR}/test/testutil/output.c
+  ${OPENSSL_DIR}/test/testutil/options.c
+  ${OPENSSL_DIR}/test/testutil/test_options.c
+  ${OPENSSL_DIR}/test/testutil/driver.c
+  ${OPENSSL_DIR}/test/testutil/output.h
+  ${OPENSSL_DIR}/test/testutil/apps_shims.c
+  ${OPENSSL_DIR}/test/testutil/main.c
   thread.cpp
   # Ensure that openssl_t.h is generated.
   openssl_t.h)
+
+enclave_compile_definitions(openssl-support PRIVATE __STDC_NO_ATOMICS__)
 
 enclave_compile_options(
   openssl-support PRIVATE -Wno-shorten-64-to-32 -Wno-sign-conversion
@@ -35,7 +59,11 @@ enclave_compile_options(
 
 enclave_link_libraries(openssl-support PRIVATE oelibcxx oelibc oe_includes)
 enclave_include_directories(
-  openssl-support PRIVATE ${OPENSSL_DIR}/include
+  openssl-support
+  PRIVATE
+  ${OPENSSL_DIR}
+  ${OPENSSL_DIR}/include
+  ${OPENSSL_DIR}/apps/include
   ${CMAKE_BINARY_DIR}/3rdparty/openssl/build/include
   ${CMAKE_CURRENT_BINARY_DIR})
 
@@ -103,7 +131,11 @@ enclave_compile_definitions(openssl-common PRIVATE OECRYPTO_OPENSSL_VER=1)
 
 enclave_link_libraries(openssl-common PRIVATE oelibc oe_includes)
 enclave_include_directories(
-  openssl-common PRIVATE ${CMAKE_CURRENT_BINARY_DIR} ${OPENSSL_DIR}/include
+  openssl-common
+  PRIVATE
+  ${CMAKE_CURRENT_BINARY_DIR}
+  ${OPENSSL_DIR}/include
+  ${OPENSSL_DIR}/apps/include
   ${OPENSSL_DIR}/test/testutil
   ${CMAKE_BINARY_DIR}/3rdparty/openssl/build/include)
 
@@ -326,6 +358,10 @@ function (add_openssl_test_enc NAME BUILDTEST CRYPTO_LIB)
 
   if ("${NAME}" STREQUAL "rsa_sp800_56b_test")
     list(APPEND INCLUDE_PATHS ${TEST_OPENSSL_DIR}/crypto/rsa)
+  endif ()
+
+  if ("${NAME}" STREQUAL "rsa_sp800_56b_test")
+    list(APPEND INCLUDE_PATHS ${OPENSSL_DIR}/crypto/rsa)
   endif ()
 
   enclave_include_directories(openssl-${TEST_NAME}_enc PRIVATE ${INCLUDE_PATHS})
