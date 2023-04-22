@@ -13,40 +13,18 @@ add_custom_command(
 # Helper library for running openssl test (the libtestutil.a from openssl).
 add_enclave_library(
   openssl-support
-  ${OPENSSL_DIR}/apps/lib/app_libctx.c
-  ${OPENSSL_DIR}/apps/lib/app_params.c
-  ${OPENSSL_DIR}/apps/lib/app_provider.c
-  ${OPENSSL_DIR}/apps/lib/app_rand.c
-  ${OPENSSL_DIR}/apps/lib/app_x509.c
-  ${OPENSSL_DIR}/apps/lib/apps_ui.c
-  ${OPENSSL_DIR}/apps/lib/columns.c
-  ${OPENSSL_DIR}/apps/lib/engine.c
-  ${OPENSSL_DIR}/apps/lib/engine_loader.c
-  ${OPENSSL_DIR}/apps/lib/fmt.c
-  ${OPENSSL_DIR}/apps/lib/http_server.c
-  ${OPENSSL_DIR}/apps/lib/names.c
-  ${OPENSSL_DIR}/apps/lib/opt.c
-  ${OPENSSL_DIR}/apps/lib/s_cb.c
-  ${OPENSSL_DIR}/apps/lib/s_socket.c
-  ${OPENSSL_DIR}/test/testutil/tests.c
-  ${OPENSSL_DIR}/test/testutil/tu_local.h
-  ${OPENSSL_DIR}/test/testutil/test_cleanup.c
-  ${OPENSSL_DIR}/test/testutil/stanza.c
-  ${OPENSSL_DIR}/test/testutil/format_output.c
   ${OPENSSL_DIR}/test/testutil/basic_output.c
-  ${OPENSSL_DIR}/test/testutil/testutil_init.c
-  ${OPENSSL_DIR}/test/testutil/load.c
-  ${OPENSSL_DIR}/test/testutil/provider.c
   ${OPENSSL_DIR}/test/testutil/cb.c
-  ${OPENSSL_DIR}/test/testutil/random.c
-  ${OPENSSL_DIR}/test/testutil/fake_random.c
-  ${OPENSSL_DIR}/test/testutil/output.c
-  ${OPENSSL_DIR}/test/testutil/options.c
-  ${OPENSSL_DIR}/test/testutil/test_options.c
   ${OPENSSL_DIR}/test/testutil/driver.c
-  ${OPENSSL_DIR}/test/testutil/output.h
-  ${OPENSSL_DIR}/test/testutil/apps_shims.c
+  ${OPENSSL_DIR}/test/testutil/format_output.c
   ${OPENSSL_DIR}/test/testutil/main.c
+  ${OPENSSL_DIR}/test/testutil/output_helpers.c
+  ${OPENSSL_DIR}/test/testutil/random.c
+  ${OPENSSL_DIR}/test/testutil/stanza.c
+  ${OPENSSL_DIR}/test/testutil/tap_bio.c
+  ${OPENSSL_DIR}/test/testutil/test_cleanup.c
+  ${OPENSSL_DIR}/test/testutil/tests.c
+  ${OPENSSL_DIR}/test/testutil/testutil_init.c
   thread.cpp
   # Ensure that openssl_t.h is generated.
   openssl_t.h)
@@ -150,9 +128,9 @@ function (add_openssl_test_enc NAME BUILDTEST CRYPTO_LIB)
     list(APPEND TEST_SRC ${OPENSSL_DIR}/test/helpers/cmp_testlib.c)
   endif ()
 
-  if ("${NAME}" IN_LIST SSL_TEST_LIST)
-    list(APPEND TEST_SRC ${OPENSSL_DIR}/test/helpers/ssltestlib.c)
-  endif ()
+  #if ("${NAME}" IN_LIST SSL_TEST_LIST)
+  #list(APPEND TEST_SRC ${OPENSSL_DIR}/test/helpers/ssltestlib.c)
+  #endif ()
 
   if ("${NAME}" STREQUAL "drbg_cavs_test")
     list(APPEND TEST_SRC ${OPENSSL_DIR}/test/drbg_cavs_data.c)
@@ -177,10 +155,10 @@ function (add_openssl_test_enc NAME BUILDTEST CRYPTO_LIB)
     list(APPEND TEST_SRC ${OPENSSL_DIR}/test/p_test.c)
   endif ()
 
-  if ("${NAME}" STREQUAL "ssl_test")
-    list(APPEND TEST_SRC ${OPENSSL_DIR}/test/helpers/handshake.c
-         ${OPENSSL_DIR}/test/helpers/ssl_test_ctx.c)
-  endif ()
+  # if ("${NAME}" STREQUAL "ssl_test")
+  #   list(APPEND TEST_SRC ${OPENSSL_DIR}/test/helpers/handshake.c
+  #        ${OPENSSL_DIR}/test/helpers/ssl_test_ctx.c)
+  # endif ()
 
   if ("${NAME}" STREQUAL "ssl_test_ctx_test")
     list(APPEND TEST_SRC ${OPENSSL_DIR}/test/helpers/ssl_test_ctx.c)
