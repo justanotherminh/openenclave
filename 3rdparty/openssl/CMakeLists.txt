@@ -15,7 +15,7 @@ set(OPENSSL_INSTALL_INCLUDES ${OE_INCDIR}/openenclave/openssl)
 
 set(OPENSSL_3_DIR ${CMAKE_CURRENT_SOURCE_DIR}/openssl_3)
 set(OPENSSL_3_BUILD_INCLUDES ${OPENSSL_BUILD}/include_3)
-set(OPENSSL_3_BUILD_GENERATED ${OPENSSL_BUILD}/generated)
+set(OPENSSL_3_BUILD_GENERATED ${OPENSSL_BUILD}/generated_3)
 set(OPENSSL_3_INSTALL_INCLUDES ${OE_INCDIR}/openenclave/openssl_3)
 set(OPENSSL_3_PROVIDER_COMMON_INCLUDES
     ${OPENSSL_3_DIR}/providers/common/include)
@@ -71,7 +71,7 @@ set(OPENSSL_PATCHED_ASM_SRC
     # Needed by the OPENSSL_CPUID_OBJ compilation definition.
     crypto/x86_64cpuid.s)
 
-if (OE_SGX)
+# if (OE_SGX)
   foreach (source_file ${OPENSSL_GENERATED_ASM_SRC})
     list(APPEND OPENSSL_GENERATED_BYPRODUCTS
          ${OPENSSL_BUILD_GENERATED}/${source_file})
@@ -90,7 +90,7 @@ if (OE_SGX)
     list(APPEND OPENSSL_3_COPIED_BYPRODUCTS
          ${OPENSSL_3_BUILD_GENERATED}/${source_file})
   endforeach ()
-endif ()
+# endif ()
 
 if (WIN32)
   # Set the compiler to clang. Otherwise cl will be used.
@@ -107,46 +107,51 @@ foreach (header_file ${OPENSSL_CRYPTO_HEADERS})
     APPEND
     OPENSSL_CONFIGURE_COMMANDS
     COMMAND
-    ${CMAKE_COMMAND}
-    -E
-    copy
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/${header_file}
-    ${OPENSSL_BUILD_INCLUDES}/crypto/${header_file})
+      ${CMAKE_COMMAND}
+      -E
+      copy
+      ${CMAKE_CURRENT_SOURCE_DIR}/include/${header_file}
+      ${OPENSSL_BUILD_INCLUDES}/crypto/${header_file}
+  )
   list(
     APPEND
     OPENSSL_3_CONFIGURE_COMMANDS
     COMMAND
-    ${CMAKE_COMMAND}
-    -E
-    copy
-    ${CMAKE_CURRENT_SOURCE_DIR}/include_3/${header_file}
-    ${OPENSSL_3_BUILD_INCLUDES}/crypto/${header_file})
+      ${CMAKE_COMMAND}
+      -E
+      copy
+      ${CMAKE_CURRENT_SOURCE_DIR}/include_3/${header_file}
+      ${OPENSSL_3_BUILD_INCLUDES}/crypto/${header_file}
+  )
 endforeach ()
 
-# NOTE: OpenSSL 1. only
+# NOTE: Shared
 set(OPENSSL_INCLUDE_HEADERS opensslconf.h)
 foreach (header_file ${OPENSSL_INCLUDE_HEADERS})
   list(
     APPEND
     OPENSSL_CONFIGURE_COMMANDS
     COMMAND
-    ${CMAKE_COMMAND}
-    -E
-    copy
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/${header_file}
-    ${OPENSSL_BUILD_INCLUDES}/openssl/${header_file})
+      ${CMAKE_COMMAND}
+      -E
+      copy
+      ${CMAKE_CURRENT_SOURCE_DIR}/include/${header_file}
+      ${OPENSSL_BUILD_INCLUDES}/openssl/${header_file}
+  )
   list(
     APPEND
     OPENSSL_INCLUDES_COMMANDS
     COMMAND
-    ${CMAKE_COMMAND}
-    -E
-    copy
-    ${OPENSSL_BUILD_INCLUDES}/openssl/${header_file}
-    ${OPENSSL_INSTALL_INCLUDES}/${header_file})
+      ${CMAKE_COMMAND}
+      -E
+      copy
+      ${OPENSSL_BUILD_INCLUDES}/openssl/${header_file}
+      ${OPENSSL_INSTALL_INCLUDES}/${header_file}
+  )
 endforeach ()
 
 set(OPENSSL_3_INCLUDE_HEADERS
+    crypto.h
     bio.h
     cmp.h
     cms.h
@@ -176,20 +181,22 @@ foreach (header_file ${OPENSSL_3_INCLUDE_HEADERS})
     APPEND
     OPENSSL_3_CONFIGURE_COMMANDS
     COMMAND
-    ${CMAKE_COMMAND}
-    -E
-    copy
-    ${CMAKE_CURRENT_SOURCE_DIR}/include_3/${header_file}
-    ${OPENSSL_3_BUILD_INCLUDES}/openssl/${header_file})
+      ${CMAKE_COMMAND}
+      -E
+      copy
+      ${CMAKE_CURRENT_SOURCE_DIR}/include_3/${header_file}
+      ${OPENSSL_3_BUILD_INCLUDES}/openssl/${header_file}
+  )
   list(
     APPEND
     OPENSSL_3_INCLUDES_COMMANDS
     COMMAND
-    ${CMAKE_COMMAND}
-    -E
-    copy
-    ${OPENSSL_3_BUILD_INCLUDES}/openssl/${header_file}
-    ${OPENSSL_3_INSTALL_INCLUDES}/${header_file})
+      ${CMAKE_COMMAND}
+      -E
+      copy
+      ${OPENSSL_3_BUILD_INCLUDES}/openssl/${header_file}
+      ${OPENSSL_3_INSTALL_INCLUDES}/${header_file}
+  )
 endforeach ()
 
 set(OPENSSL_3_PROVIDERS_HEADERS
@@ -205,11 +212,12 @@ foreach (header_file ${OPENSSL_3_PROVIDERS_HEADERS})
     APPEND
     OPENSSL_3_CONFIGURE_COMMANDS
     COMMAND
-    ${CMAKE_COMMAND}
-    -E
-    copy
-    ${CMAKE_CURRENT_SOURCE_DIR}/include_3/prov/${header_file}
-    ${OPENSSL_3_PROVIDER_COMMON_INCLUDES}/prov/${header_file})
+      ${CMAKE_COMMAND}
+      -E
+      copy
+      ${CMAKE_CURRENT_SOURCE_DIR}/include_3/prov/${header_file}
+      ${OPENSSL_3_PROVIDER_COMMON_INCLUDES}/prov/${header_file}
+  )
 endforeach ()
 
 set(OPENSSL_UNSUPPORTED_HEADERS unsupported.h crypto_unsupported.h
@@ -219,21 +227,23 @@ foreach (header_file ${OPENSSL_UNSUPPORTED_HEADERS})
     APPEND
     OPENSSL_INCLUDES_COMMANDS
     COMMAND
-    ${CMAKE_COMMAND}
-    -E
-    copy
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/${header_file}
-    ${OPENSSL_INSTALL_INCLUDES}/${header_file})
+      ${CMAKE_COMMAND}
+      -E
+      copy
+      ${CMAKE_CURRENT_SOURCE_DIR}/include/${header_file}
+      ${OPENSSL_INSTALL_INCLUDES}/${header_file}
+  )
   list(
     APPEND
     OPENSSL_3_INCLUDES_COMMANDS
     # TODO: handle unsupported header files?
     COMMAND
-    ${CMAKE_COMMAND}
-    -E
-    copy
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/${header_file}
-    ${OPENSSL_3_INSTALL_INCLUDES}/${header_file})
+      ${CMAKE_COMMAND}
+      -E
+      copy
+      ${CMAKE_CURRENT_SOURCE_DIR}/include/${header_file}
+      ${OPENSSL_3_INSTALL_INCLUDES}/${header_file}
+  )
 endforeach ()
 
 ExternalProject_Add(
@@ -277,7 +287,7 @@ ExternalProject_Add(
   SOURCE_DIR ${OPENSSL_3_DIR}
   CONFIGURE_COMMAND
   COMMAND ${CMAKE_COMMAND} -E copy_directory ${OPENSSL_DIR}/include/openssl
-          ${OPENSSL_INSTALL_INCLUDES} ${OPENSSL_3_INCLUDES_COMMANDS}
+          ${OPENSSL_3_INSTALL_INCLUDES} ${OPENSSL_3_INCLUDES_COMMANDS}
   # COMMAND ${OE_BASH} -c "${OPENSSL_APPEND_UNSUPPORTED}"
   BUILD_COMMAND ""
   INSTALL_COMMAND "")
@@ -310,87 +320,85 @@ set(OPENSSL_ASSEMBLY_SCRIPTS
     crypto/sha/asm/sha1-mb-x86_64
     crypto/sha/asm/sha1-x86_64
     crypto/sha/asm/sha256-mb-x86_64
-    crypto/sha/asm/sha512-x86_64)
+    crypto/sha/asm/sha512-x86_64
+)
 
 set(OPENSSL_3_ASSEMBLY_SCRIPTS
-    crypto/aes/asm/aes-x86_64 crypto/aes/asm/aesni-x86_64
-    crypto/aes/asm/bsaes-x86_64 crypto/bn/asm/rsaz-avx512)
+    crypto/aes/asm/aes-x86_64
+    crypto/aes/asm/aesni-x86_64
+    crypto/aes/asm/bsaes-x86_64
+    crypto/bn/asm/rsaz-avx512
+)
 
 set(OPENSSL_GENERATED_COMMANDS
-    COMMAND ${CMAKE_COMMAND} -E make_directory
-    ${OPENSSL_BUILD_GENERATED}/crypto/perlasm COMMAND ${CMAKE_COMMAND} -E copy
-    ${INTELSSL_DIR}/x86_64-xlate.pl
-    ${OPENSSL_BUILD_GENERATED}/crypto/perlasm/x86_64-xlate.pl COMMAND
-    ${CMAKE_COMMAND} -E make_directory
-    ${OPENSSL_BUILD_GENERATED}/crypto/aes/asm COMMAND ${CMAKE_COMMAND} -E
-    make_directory ${OPENSSL_BUILD_GENERATED}/crypto/bn/asm COMMAND
-    ${CMAKE_COMMAND} -E make_directory ${OPENSSL_BUILD_GENERATED}/crypto/ec/asm
-    COMMAND ${CMAKE_COMMAND} -E copy
-    ${OPENSSL_DIR}/crypto/ec/ecp_nistz256_table.c
-    ${OPENSSL_BUILD_GENERATED}/crypto/ec/ecp_nistz256_table.c COMMAND
-    ${CMAKE_COMMAND} -E make_directory
-    ${OPENSSL_BUILD_GENERATED}/crypto/md5/asm COMMAND ${CMAKE_COMMAND} -E
-    make_directory ${OPENSSL_BUILD_GENERATED}/crypto/modes/asm COMMAND
-    ${CMAKE_COMMAND} -E make_directory
-    ${OPENSSL_BUILD_GENERATED}/crypto/sha/asm)
+    COMMAND ${CMAKE_COMMAND} -E make_directory ${OPENSSL_BUILD_GENERATED}/crypto/perlasm
+    COMMAND ${CMAKE_COMMAND} -E copy ${INTELSSL_DIR}/x86_64-xlate.pl
+      ${OPENSSL_BUILD_GENERATED}/crypto/perlasm/x86_64-xlate.pl
+    COMMAND ${CMAKE_COMMAND} -E make_directory ${OPENSSL_BUILD_GENERATED}/crypto/aes/asm
+    COMMAND ${CMAKE_COMMAND} -E make_directory ${OPENSSL_BUILD_GENERATED}/crypto/bn/asm
+    COMMAND ${CMAKE_COMMAND} -E make_directory ${OPENSSL_BUILD_GENERATED}/crypto/ec/asm
+    COMMAND ${CMAKE_COMMAND} -E copy ${OPENSSL_DIR}/crypto/ec/ecp_nistz256_table.c
+      ${OPENSSL_BUILD_GENERATED}/crypto/ec/ecp_nistz256_table.c
+    COMMAND ${CMAKE_COMMAND} -E make_directory ${OPENSSL_BUILD_GENERATED}/crypto/md5/asm
+    COMMAND ${CMAKE_COMMAND} -E make_directory ${OPENSSL_BUILD_GENERATED}/crypto/modes/asm
+    COMMAND ${CMAKE_COMMAND} -E make_directory ${OPENSSL_BUILD_GENERATED}/crypto/sha/asm
+)
 
 set(OPENSSL_3_GENERATED_COMMANDS
-    COMMAND ${CMAKE_COMMAND} -E make_directory
-    ${OPENSSL_3_BUILD_GENERATED}/crypto/perlasm COMMAND ${CMAKE_COMMAND} -E
-    copy ${OPENSSL_3_DIR}/crypto/perlasm/x86_64-xlate.pl
-    ${OPENSSL_3_BUILD_GENERATED}/crypto/perlasm/x86_64-xlate.pl COMMAND
-    ${CMAKE_COMMAND} -E copy ${OPENSSL_3_DIR}/crypto/perlasm/x86_64-support.pl
-    ${OPENSSL_3_BUILD_GENERATED}/crypto/perlasm/x86_64-support.pl COMMAND
-    ${CMAKE_COMMAND} -E make_directory
-    ${OPENSSL_3_BUILD_GENERATED}/crypto/aes/asm COMMAND ${CMAKE_COMMAND} -E
-    make_directory ${OPENSSL_3_BUILD_GENERATED}/crypto/bn/asm COMMAND
-    ${CMAKE_COMMAND} -E make_directory
-    ${OPENSSL_3_BUILD_GENERATED}/crypto/ec/asm COMMAND ${CMAKE_COMMAND} -E copy
-    ${OPENSSL_DIR}/crypto/ec/ecp_nistz256_table.c
-    ${OPENSSL_3_BUILD_GENERATED}/crypto/ec/ecp_nistz256_table.c COMMAND
-    ${CMAKE_COMMAND} -E make_directory
-    ${OPENSSL_3_BUILD_GENERATED}/crypto/md5/asm COMMAND ${CMAKE_COMMAND} -E
-    make_directory ${OPENSSL_3_BUILD_GENERATED}/crypto/modes/asm COMMAND
-    ${CMAKE_COMMAND} -E make_directory
-    ${OPENSSL_3_BUILD_GENERATED}/crypto/sha/asm)
+    COMMAND ${CMAKE_COMMAND} -E make_directory ${OPENSSL_3_BUILD_GENERATED}/crypto/perlasm
+    COMMAND ${CMAKE_COMMAND} -E copy ${OPENSSL_3_DIR}/crypto/perlasm/x86_64-xlate.pl
+      ${OPENSSL_3_BUILD_GENERATED}/crypto/perlasm/x86_64-xlate.pl
+    COMMAND ${CMAKE_COMMAND} -E copy ${OPENSSL_3_DIR}/crypto/perlasm/x86_64-support.pl
+      ${OPENSSL_3_BUILD_GENERATED}/crypto/perlasm/x86_64-support.pl
+    COMMAND ${CMAKE_COMMAND} -E make_directory ${OPENSSL_3_BUILD_GENERATED}/crypto/aes/asm
+    COMMAND ${CMAKE_COMMAND} -E make_directory ${OPENSSL_3_BUILD_GENERATED}/crypto/bn/asm
+    COMMAND ${CMAKE_COMMAND} -E make_directory ${OPENSSL_3_BUILD_GENERATED}/crypto/ec/asm
+    COMMAND ${CMAKE_COMMAND} -E copy ${OPENSSL_3_DIR}/crypto/ec/ecp_nistz256_table.c
+      ${OPENSSL_3_BUILD_GENERATED}/crypto/ec/ecp_nistz256_table.c
+    COMMAND ${CMAKE_COMMAND} -E make_directory ${OPENSSL_3_BUILD_GENERATED}/crypto/md5/asm
+    COMMAND ${CMAKE_COMMAND} -E make_directory ${OPENSSL_3_BUILD_GENERATED}/crypto/modes/asm
+    COMMAND ${CMAKE_COMMAND} -E make_directory ${OPENSSL_3_BUILD_GENERATED}/crypto/sha/asm)
+
 
 foreach (source_file ${OPENSSL_ASSEMBLY_SCRIPTS})
   list(
     APPEND
     OPENSSL_GENERATED_COMMANDS
     COMMAND
-    ${CMAKE_COMMAND}
-    -E
-    copy
-    ${OPENSSL_DIR}/${source_file}.pl
-    ${OPENSSL_BUILD_GENERATED}/${source_file}.pl
+      ${CMAKE_COMMAND}
+      -E
+      copy
+      ${OPENSSL_DIR}/${source_file}.pl
+      ${OPENSSL_BUILD_GENERATED}/${source_file}.pl
     COMMAND
-    ${CMAKE_COMMAND}
-    -E
-    env
-    CC=${OPENSSL_C_COMPILER}
-    ${OE_PERL}
-    ${OPENSSL_BUILD_GENERATED}/${source_file}.pl
-    elf
-    ${OPENSSL_BUILD_GENERATED}/${source_file}.s)
+      ${CMAKE_COMMAND}
+      -E
+      env
+      CC=${OPENSSL_C_COMPILER}
+      ${OE_PERL}
+      ${OPENSSL_BUILD_GENERATED}/${source_file}.pl
+      elf
+      ${OPENSSL_BUILD_GENERATED}/${source_file}.s
+    )
   list(
     APPEND
     OPENSSL_3_GENERATED_COMMANDS
     COMMAND
-    ${CMAKE_COMMAND}
-    -E
-    copy
-    ${OPENSSL_3_DIR}/${source_file}.pl
-    ${OPENSSL_3_BUILD_GENERATED}/${source_file}.pl
+      ${CMAKE_COMMAND}
+      -E
+      copy
+      ${OPENSSL_3_DIR}/${source_file}.pl
+      ${OPENSSL_3_BUILD_GENERATED}/${source_file}.pl
     COMMAND
-    ${CMAKE_COMMAND}
-    -E
-    env
-    CC=${OPENSSL_C_COMPILER}
-    ${OE_PERL}
-    ${OPENSSL_3_BUILD_GENERATED}/${source_file}.pl
-    elf
-    ${OPENSSL_3_BUILD_GENERATED}/${source_file}.s)
+      ${CMAKE_COMMAND}
+      -E
+      env
+      CC=${OPENSSL_C_COMPILER}
+      ${OE_PERL}
+      ${OPENSSL_3_BUILD_GENERATED}/${source_file}.pl
+      elf
+      ${OPENSSL_3_BUILD_GENERATED}/${source_file}.s
+    )
 endforeach ()
 
 foreach (source_file ${OPENSSL_3_ASSEMBLY_SCRIPTS})
@@ -398,47 +406,47 @@ foreach (source_file ${OPENSSL_3_ASSEMBLY_SCRIPTS})
     APPEND
     OPENSSL_3_GENERATED_COMMANDS
     COMMAND
-    ${CMAKE_COMMAND}
-    -E
-    copy
-    ${OPENSSL_3_DIR}/${source_file}.pl
-    ${OPENSSL_3_BUILD_GENERATED}/${source_file}.pl
+      ${CMAKE_COMMAND}
+      -E
+      copy
+      ${OPENSSL_3_DIR}/${source_file}.pl
+      ${OPENSSL_3_BUILD_GENERATED}/${source_file}.pl
     COMMAND
-    ${CMAKE_COMMAND}
-    -E
-    env
-    CC=${OPENSSL_C_COMPILER}
-    ${OE_PERL}
-    ${OPENSSL_3_BUILD_GENERATED}/${source_file}.pl
-    elf
-    ${OPENSSL_3_BUILD_GENERATED}/${source_file}.s)
+      ${CMAKE_COMMAND}
+      -E
+      env
+      CC=${OPENSSL_C_COMPILER}
+      ${OE_PERL}
+      ${OPENSSL_3_BUILD_GENERATED}/${source_file}.pl
+      elf
+      ${OPENSSL_3_BUILD_GENERATED}/${source_file}.s)
 endforeach ()
 
 list(
   APPEND
   OPENSSL_GENERATED_COMMANDS
   COMMAND
-  ${CMAKE_COMMAND}
-  -E
-  env
-  CC=${OPENSSL_C_COMPILER}
-  ${OE_PERL}
-  ${OPENSSL_BUILD_GENERATED}/crypto/sha/asm/sha512-x86_64.pl
-  elf
-  ${OPENSSL_BUILD_GENERATED}/crypto/sha/asm/sha256-x86_64.s)
+    ${CMAKE_COMMAND}
+    -E
+    env
+    CC=${OPENSSL_C_COMPILER}
+    ${OE_PERL}
+    ${OPENSSL_BUILD_GENERATED}/crypto/sha/asm/sha512-x86_64.pl
+    elf
+    ${OPENSSL_BUILD_GENERATED}/crypto/sha/asm/sha256-x86_64.s)
 
 list(
   APPEND
   OPENSSL_3_GENERATED_COMMANDS
   COMMAND
-  ${CMAKE_COMMAND}
-  -E
-  env
-  CC=${OPENSSL_C_COMPILER}
-  ${OE_PERL}
-  ${OPENSSL_3_BUILD_GENERATED}/crypto/sha/asm/sha512-x86_64.pl
-  elf
-  ${OPENSSL_3_BUILD_GENERATED}/crypto/sha/asm/sha256-x86_64.s)
+    ${CMAKE_COMMAND}
+    -E
+    env
+    CC=${OPENSSL_C_COMPILER}
+    ${OE_PERL}
+    ${OPENSSL_3_BUILD_GENERATED}/crypto/sha/asm/sha512-x86_64.pl
+    elf
+    ${OPENSSL_3_BUILD_GENERATED}/crypto/sha/asm/sha256-x86_64.s)
 
 ExternalProject_Add(
   openssl_generated
@@ -974,8 +982,7 @@ set(OPENSSL_SHARED_CRYPTO_SOURCE
     crypto/x509/x_x509.c
     crypto/x509/x_x509a.c)
 
-set(APPEND
-    OPENSSL_1_CRYPTO_SOURCE
+set(OPENSSL_1_CRYPTO_SOURCE
     crypto/aes/aes_cbc.c
     crypto/aes/aes_core.c
     crypto/asn1/asn1_par.c
@@ -987,6 +994,7 @@ set(APPEND
     crypto/bio/b_print.c
     crypto/bio/b_sock.c
     crypto/bio/b_sock2.c
+    crypto/bn/rsa_sup_mul.c
     crypto/cmac/cm_ameth.c
     crypto/cmac/cm_pmeth.c
     crypto/dh/dh_rfc7919.c
@@ -1392,7 +1400,9 @@ endforeach ()
 # The assembly files are modified to be compatible with LVI mitigation.
 add_enclave_library(
   opensslcrypto STATIC ${OPENSSL_CRYPTO_LIB_SOURCE}
-  ${OPENSSL_GENERATED_BYPRODUCTS} ${OPENSSL_COPIED_BYPRODUCTS})
+  ${OPENSSL_GENERATED_BYPRODUCTS}
+  ${OPENSSL_BUILD_GENERATED}/crypto/md5/asm/md5-x86_64.s
+  ${OPENSSL_COPIED_BYPRODUCTS})
 
 add_enclave_library(
   opensslcrypto_3 STATIC ${OPENSSL_3_CRYPTO_LIB_SOURCE}
@@ -1453,11 +1463,11 @@ foreach (source_file ${OPENSSL_SHARED_SSL_SOURCE})
   list(APPEND OPENSSL_3_SSL_LIB_SOURCE openssl_3/${source_file})
 endforeach ()
 
-foreach (source_file ${OPENSSL_1_CRYPTO_SOURCE})
+foreach (source_file ${OPENSSL_1_SSL_SOURCE})
   list(APPEND OPENSSL_SSL_LIB_SOURCE openssl/${source_file})
 endforeach ()
 
-foreach (source_file ${OPENSSL_3_CRYPTO_SOURCE})
+foreach (source_file ${OPENSSL_3_SSL_SOURCE})
   list(APPEND OPENSSL_3_SSL_LIB_SOURCE openssl_3/${source_file})
 endforeach ()
 
@@ -1499,9 +1509,11 @@ enclave_include_directories(
   $<BUILD_INTERFACE:${OPENSSL_DIR}> $<BUILD_INTERFACE:${OPENSSL_DIR}/include>)
 
 enclave_include_directories(
-  opensslssl_3 PRIVATE $<BUILD_INTERFACE:${OPENSSL_BUILD_INCLUDES}>
+  opensslssl_3 PRIVATE $<BUILD_INTERFACE:${OPENSSL_3_BUILD_INCLUDES}>
   $<BUILD_INTERFACE:${OPENSSL_3_DIR}>
-  $<BUILD_INTERFACE:${OPENSSL_3_DIR}/include>)
+  $<BUILD_INTERFACE:${OPENSSL_3_DIR}/include>
+  $<BUILD_INTERFACE:${OPENSSL_3_DIR}/providers/common/include>
+  $<BUILD_INTERFACE:${OPENSSL_3_DIR}/providers/implementations/include>)
 
 maybe_build_using_clangw(opensslcrypto)
 maybe_build_using_clangw(opensslssl)
@@ -1666,19 +1678,33 @@ add_custom_command(
 
 add_custom_target(openssl_buildinf_header
                   DEPENDS ${OPENSSL_BUILD_INCLUDES}/buildinf.h)
-
 add_enclave_dependencies(opensslcrypto openssl_buildinf_header)
 
+# get_target_property(OPENSSL_3_C_OPTIONS opensslcrypto_3 COMPILE_OPTIONS)
+# set(OPENSSL_3_C_DEFINES ${OPENSSL_BUILD_INFO})
+# list(TRANSFORM OPENSSL_C_DEFINES PREPEND "-D")
+# list(APPEND OPENSSL_CFLAGS ${OPENSSL_C_COMPILER} ${OPENSSL_C_OPTIONS}
+#      ${OPENSSL_C_DEFINES})
+# string(REPLACE ";" " " OPENSSL_CFLAGS "${OPENSSL_CFLAGS}")
+
+add_custom_command(
+  OUTPUT ${OPENSSL_3_BUILD_INCLUDES}/buildinf.h
+  COMMAND ${CMAKE_COMMAND} -E make_directory ${OPENSSL_3_BUILD_INCLUDES}
+  COMMAND ${OE_PERL} "${OPENSSL_3_DIR}/util/mkbuildinf.pl" "${OPENSSL_CFLAGS}"
+          "${ARCH}" > ${OPENSSL_3_BUILD_INCLUDES}/buildinf.h)
+
 # TODO: modify openssl_buildinf_header
-add_enclave_dependencies(opensslcrypto_3 openssl_buildinf_header)
+add_custom_target(openssl_3_buildinf_header
+                  DEPENDS ${OPENSSL_3_BUILD_INCLUDES}/buildinf.h)
+add_enclave_dependencies(opensslcrypto_3 openssl_3_buildinf_header)
 
 # Install the include files and the static libraries.
 install_enclaves(
   TARGETS
   opensslcrypto
   opensslssl
-  opensslcrypto_3
-  opensslssl_3
+  #opensslcrypto_3
+  #opensslssl_3
   EXPORT
   openenclave-targets
   ARCHIVE
@@ -1698,4 +1724,4 @@ install_enclaves(TARGETS openssl EXPORT openenclave-targets)
 
 add_enclave_library(openssl_3 INTERFACE)
 enclave_link_libraries(openssl_3 INTERFACE opensslcrypto_3 opensslssl_3)
-install_enclaves(TARGETS openssl_3 EXPORT openenclave-targets)
+#install_enclaves(TARGETS openssl_3 EXPORT openenclave-targets)

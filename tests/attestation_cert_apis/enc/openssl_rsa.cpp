@@ -145,24 +145,24 @@ oe_result_t generate_rsa_pair(
     ctx = EVP_PKEY_CTX_new_id(EVP_PKEY_RSA, NULL);
     if (!ctx)
         OE_RAISE_MSG(OE_FAILURE, "EVP_PKEY_CTX_new_id failed\n");
-    
+
     res = EVP_PKEY_keygen_init(ctx);
     if (res <= 0)
         OE_RAISE_MSG(OE_FAILURE, "EVP_PKEY_keygen_init failed(%d)\n", res);
-    
+
     res = EVP_PKEY_CTX_set_rsa_keygen_bits(ctx, 2048);
     if (res <= 0)
         OE_RAISE_MSG(OE_FAILURE, "EVP_PKEY_CTX_set_rsa_keygen_bits failed(%d)\n", res);
-    
+
     e = BN_new();
     if (!e)
         OE_RAISE_MSG(OE_FAILURE, "BN_new failed\n");
-    
+
     res = BN_set_word(e, (BN_ULONG)RSA_F4);
     if (res <= 0)
         OE_RAISE_MSG(OE_FAILURE, "BN_set_word failed(%d)\n", res);
-    
-    res = EVP_PKEY_CTX_set1_rsa_keygen_pubexp(ctx, e);
+
+    res = EVP_PKEY_CTX_set_rsa_keygen_pubexp(ctx, e);
     if (res <= 0)
         OE_RAISE_MSG(OE_FAILURE, "EVP_PKEY_CTX_set_rsa_keygen_pubexp failed(%d)\n", res);
 
@@ -170,7 +170,7 @@ oe_result_t generate_rsa_pair(
     if (res <= 0) {
         OE_RAISE_MSG(OE_FAILURE, "EVP_PKEY_keygen failed (%d)\n", res);
     }
-    
+
     local_public_key = (uint8_t*)calloc(1, OE_RSA_PUBLIC_KEY_SIZE);
     if (local_public_key == nullptr)
         OE_RAISE(OE_OUT_OF_MEMORY);
@@ -178,7 +178,7 @@ oe_result_t generate_rsa_pair(
     local_private_key = (uint8_t*)calloc(1, OE_RSA_PRIVATE_KEY_SIZE);
     if (local_private_key == nullptr)
         OE_RAISE(OE_OUT_OF_MEMORY);
-    
+
     bio = BIO_new(BIO_s_mem());
     if (!bio)
         OE_RAISE_MSG(OE_FAILURE, "BIO_new for local_public_key failed\n");

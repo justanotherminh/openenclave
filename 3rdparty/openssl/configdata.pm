@@ -6885,6 +6885,36 @@ our %unified_info = (
             "configdata.pm",
             "openssl_3/util/perl/OpenSSL/Ordinals.pm"
         ],
+        "openssl_3/providers/common/include/prov/der_digests.h" => [
+            "openssl_3/providers/common/der/DIGESTS.asn1",
+            "openssl_3/providers/common/der/NIST.asn1",
+            "openssl_3/providers/common/der/oids_to_c.pm"
+        ],
+        "openssl_3/providers/common/include/prov/der_dsa.h" => [
+            "openssl_3/providers/common/der/DSA.asn1",
+            "openssl_3/providers/common/der/oids_to_c.pm"
+        ],
+        "openssl_3/providers/common/include/prov/der_ec.h" => [
+            "openssl_3/providers/common/der/EC.asn1",
+            "openssl_3/providers/common/der/oids_to_c.pm"
+        ],
+        "openssl_3/providers/common/include/prov/der_ecx.h" => [
+            "openssl_3/providers/common/der/ECX.asn1",
+            "openssl_3/providers/common/der/oids_to_c.pm"
+        ],
+        "openssl_3/providers/common/include/prov/der_rsa.h" => [
+            "openssl_3/providers/common/der/NIST.asn1",
+            "openssl_3/providers/common/der/RSA.asn1",
+            "openssl_3/providers/common/der/oids_to_c.pm"
+        ],
+        "openssl_3/providers/common/include/prov/der_sm2.h" => [
+            "openssl_3/providers/common/der/SM2.asn1",
+            "openssl_3/providers/common/der/oids_to_c.pm"
+        ],
+        "openssl_3/providers/common/include/prov/der_wrap.h" => [
+            "openssl_3/providers/common/der/oids_to_c.pm",
+            "openssl_3/providers/common/der/wrap.asn1"
+        ],
         "providers/common/der/der_digests_gen.c" => [
             "openssl_3/providers/common/der/DIGESTS.asn1",
             "openssl_3/providers/common/der/NIST.asn1",
@@ -6970,36 +7000,6 @@ our %unified_info = (
         "providers/common/der/libdefault-lib-der_sm2_sig.o" => [
             "providers/common/include/prov/der_ec.h",
             "providers/common/include/prov/der_sm2.h"
-        ],
-        "providers/common/include/prov/der_digests.h" => [
-            "openssl_3/providers/common/der/DIGESTS.asn1",
-            "openssl_3/providers/common/der/NIST.asn1",
-            "openssl_3/providers/common/der/oids_to_c.pm"
-        ],
-        "providers/common/include/prov/der_dsa.h" => [
-            "openssl_3/providers/common/der/DSA.asn1",
-            "openssl_3/providers/common/der/oids_to_c.pm"
-        ],
-        "providers/common/include/prov/der_ec.h" => [
-            "openssl_3/providers/common/der/EC.asn1",
-            "openssl_3/providers/common/der/oids_to_c.pm"
-        ],
-        "providers/common/include/prov/der_ecx.h" => [
-            "openssl_3/providers/common/der/ECX.asn1",
-            "openssl_3/providers/common/der/oids_to_c.pm"
-        ],
-        "providers/common/include/prov/der_rsa.h" => [
-            "openssl_3/providers/common/der/NIST.asn1",
-            "openssl_3/providers/common/der/RSA.asn1",
-            "openssl_3/providers/common/der/oids_to_c.pm"
-        ],
-        "providers/common/include/prov/der_sm2.h" => [
-            "openssl_3/providers/common/der/SM2.asn1",
-            "openssl_3/providers/common/der/oids_to_c.pm"
-        ],
-        "providers/common/include/prov/der_wrap.h" => [
-            "openssl_3/providers/common/der/oids_to_c.pm",
-            "openssl_3/providers/common/der/wrap.asn1"
         ],
         "providers/implementations/encode_decode/libdefault-lib-encode_key2any.o" => [
             "providers/common/include/prov/der_rsa.h"
@@ -18044,6 +18044,27 @@ our %unified_info = (
             ".",
             "openssl_3/util/perl/OpenSSL"
         ],
+        "openssl_3/providers/common/include/prov/der_digests.h" => [
+            "openssl_3/providers/common/der"
+        ],
+        "openssl_3/providers/common/include/prov/der_dsa.h" => [
+            "openssl_3/providers/common/der"
+        ],
+        "openssl_3/providers/common/include/prov/der_ec.h" => [
+            "openssl_3/providers/common/der"
+        ],
+        "openssl_3/providers/common/include/prov/der_ecx.h" => [
+            "openssl_3/providers/common/der"
+        ],
+        "openssl_3/providers/common/include/prov/der_rsa.h" => [
+            "openssl_3/providers/common/der"
+        ],
+        "openssl_3/providers/common/include/prov/der_sm2.h" => [
+            "openssl_3/providers/common/der"
+        ],
+        "openssl_3/providers/common/include/prov/der_wrap.h" => [
+            "openssl_3/providers/common/der"
+        ],
         "providers/common/der/der_digests_gen.c" => [
             "openssl_3/providers/common/der"
         ],
@@ -18160,27 +18181,6 @@ our %unified_info = (
         ],
         "providers/common/der/libdefault-lib-der_sm2_sig.o" => [
             "providers/common/include/prov"
-        ],
-        "providers/common/include/prov/der_digests.h" => [
-            "openssl_3/providers/common/der"
-        ],
-        "providers/common/include/prov/der_dsa.h" => [
-            "openssl_3/providers/common/der"
-        ],
-        "providers/common/include/prov/der_ec.h" => [
-            "openssl_3/providers/common/der"
-        ],
-        "providers/common/include/prov/der_ecx.h" => [
-            "openssl_3/providers/common/der"
-        ],
-        "providers/common/include/prov/der_rsa.h" => [
-            "openssl_3/providers/common/der"
-        ],
-        "providers/common/include/prov/der_sm2.h" => [
-            "openssl_3/providers/common/der"
-        ],
-        "providers/common/include/prov/der_wrap.h" => [
-            "openssl_3/providers/common/der"
         ],
         "providers/implementations/encode_decode/encode_key2any.o" => [
             "providers/common/include/prov"
