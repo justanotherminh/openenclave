@@ -1592,8 +1592,8 @@ install_enclaves(
   TARGETS
   opensslcrypto
   opensslssl
-  #opensslcrypto_3
-  #opensslssl_3
+  opensslcrypto_3
+  opensslssl_3
   EXPORT
   openenclave-targets
   ARCHIVE
@@ -1613,4 +1613,4 @@ install_enclaves(TARGETS openssl EXPORT openenclave-targets)
 
 add_enclave_library(openssl_3 INTERFACE)
 enclave_link_libraries(openssl_3 INTERFACE opensslcrypto_3 opensslssl_3)
-#install_enclaves(TARGETS openssl_3 EXPORT openenclave-targets)
+install_enclaves(TARGETS openssl_3 EXPORT openenclave-targets)
