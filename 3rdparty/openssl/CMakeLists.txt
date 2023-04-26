@@ -368,7 +368,6 @@ ExternalProject_Add(
 # Note that only the following three files are required for control-flow-based LVI mitigation
 # that OE currently supports, refer to https://github.com/intel/intel-sgx-ssl/blob/master/Linux/prepare_openssl.sh#L224
 # for the reference.
-# TODO: seperate openssl_generated and openssl_3_generated?
 ExternalProject_Add(
   openssl_copied
   SOURCE_DIR ${INTELSSL_DIR}
