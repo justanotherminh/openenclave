@@ -14,11 +14,11 @@ set(OPENSSL_BUILD_GENERATED ${OPENSSL_BUILD}/generated)
 set(OPENSSL_INSTALL_INCLUDES ${OE_INCDIR}/openenclave/openssl)
 
 set(OPENSSL_3_DIR ${CMAKE_CURRENT_SOURCE_DIR}/openssl_3)
+set(OPENSSL_3_PROVIDER_COMMON_INCLUDES
+    ${OPENSSL_3_DIR}/providers/common/include)
 set(OPENSSL_3_BUILD_INCLUDES ${OPENSSL_BUILD}/include_3)
 set(OPENSSL_3_BUILD_GENERATED ${OPENSSL_BUILD}/generated_3)
 set(OPENSSL_3_INSTALL_INCLUDES ${OE_INCDIR}/openenclave/openssl_3)
-set(OPENSSL_3_PROVIDER_COMMON_INCLUDES
-    ${OPENSSL_3_DIR}/providers/common/include)
 
 set(OPENSSL_C_COMPILER ${CMAKE_C_COMPILER})
 set(OPENSSL_CXX_COMPILER ${CMAKE_CXX_COMPILER})
@@ -1489,8 +1489,11 @@ enclave_include_directories(
   $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/openenclave/3rdparty>)
 
 enclave_include_directories(
-  opensslcrypto_3 PUBLIC $<BUILD_INTERFACE:${OE_INCDIR}/openenclave>
-  $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/openenclave/3rdparty>)
+  opensslcrypto_3
+  PUBLIC
+  $<BUILD_INTERFACE:${OE_INCDIR}/openenclave>
+  $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/openenclave/3rdparty/openssl_3>
+)
 
 enclave_include_directories(
   opensslssl PRIVATE $<BUILD_INTERFACE:${OPENSSL_BUILD_INCLUDES}>
@@ -1564,8 +1567,7 @@ list(
   openssl/crypto/ec/curve448/scalar.c)
 
 set_property(
-  SOURCE ${CURVE448_SRC}
-  APPEND_STRING
+  SOURCE ${CURVE448_SRC} APPEND_STRING
   PROPERTY
     COMPILE_FLAGS
     " -I${OPENSSL_DIR}/crypto/ec/curve448 -I${OPENSSL_DIR}/crypto/ec/curve448/arch_32"
@@ -1581,17 +1583,13 @@ list(
   openssl/crypto/evp/e_camellia.c
   openssl/crypto/evp/e_sm4.c)
 
-set_property(
-  SOURCE ${EVP_SRC}
-  APPEND_STRING
-  PROPERTY COMPILE_FLAGS " -I${OPENSSL_DIR}/crypto/modes")
+set_property(SOURCE ${EVP_SRC} APPEND_STRING
+             PROPERTY COMPILE_FLAGS " -I${OPENSSL_DIR}/crypto/modes")
 
 list(APPEND RAND_SRC openssl/crypto/rand/drbg_ctr.c)
 
-set_property(
-  SOURCE ${RAND_SRC}
-  APPEND_STRING
-  PROPERTY COMPILE_FLAGS " -I${OPENSSL_DIR}/crypto/modes")
+set_property(SOURCE ${RAND_SRC} APPEND_STRING
+             PROPERTY COMPILE_FLAGS " -I${OPENSSL_DIR}/crypto/modes")
 
 # The following options cannot be specified as part of the OpenSSL
 # Configure script. Options that can be specified with the script
@@ -1699,6 +1697,11 @@ install(
   PATTERN "__DECC_INCLUDE_EPILOGUE.H" EXCLUDE
   PATTERN "__DECC_INCLUDE_PROLOGUE.H" EXCLUDE
   PATTERN "opensslconf.h.in" EXCLUDE)
+install(
+  DIRECTORY ${OPENSSL_3_INSTALL_INCLUDES}
+  DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/openenclave/3rdparty
+  PATTERN "__DECC_INCLUDE_EPILOGUE.H" EXCLUDE
+  PATTERN "__DECC_INCLUDE_PROLOGUE.H" EXCLUDE)
 
 # Create openssl export target.
 add_enclave_library(openssl INTERFACE)
