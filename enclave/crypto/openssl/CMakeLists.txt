@@ -46,9 +46,13 @@ enclave_include_directories(
   $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/3rdparty/mbedtls>)
 
 enclave_include_directories(
-  oecryptoopenssl_3 PRIVATE ${CMAKE_CURRENT_BINARY_DIR}
+  oecryptoopenssl_3
+  PRIVATE
+  ${CMAKE_CURRENT_BINARY_DIR}
   $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/3rdparty/mbedtls/mbedtls/include>
-  $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/3rdparty/mbedtls>)
+  $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/3rdparty/mbedtls>
+  $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/3rdparty/openssl/openssl_3/include>
+  $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/3rdparty/openssl/include_3>)
 
 enclave_link_libraries(oecryptoopenssl PUBLIC openssl)
 enclave_link_libraries(oecryptoopenssl_3 PUBLIC openssl_3)
