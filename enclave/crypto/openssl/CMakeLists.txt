@@ -28,6 +28,7 @@ target_compile_definitions(oecryptoopenssl PRIVATE OECRYPTO_OPENSSL_VER=1)
 add_enclave_library(oecryptoopenssl_3 STATIC ${OECRYPTO_OPENSSL_SOURCE})
 
 target_compile_definitions(oecryptoopenssl_3 PRIVATE OECRYPTO_OPENSSL_VER=3)
+target_compile_options(oecryptoopenssl_3 PRIVATE "-Wno-deprecated-declarations")
 
 set_source_files_properties(
   ${PROJECT_SOURCE_DIR}/common/crypto/openssl/cmac.c
