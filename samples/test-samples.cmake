@@ -82,7 +82,9 @@ else ()
         attested_tls
         attested_tls
         attested_tls
+        attested_tls
         attestation
+        file-encryptor
         file-encryptor
         file-encryptor)
       list(
@@ -91,9 +93,11 @@ else ()
         mbedtls
         openssl
         openssl_symcrypt_fips
+        openssl_3
         mbedtls
         mbedtls
-        openssl)
+        openssl
+        openssl_3)
     endif ()
   endif ()
 endif ()
