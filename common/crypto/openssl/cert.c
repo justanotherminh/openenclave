@@ -802,8 +802,7 @@ oe_result_t oe_cert_get_ec_public_key(
     if (!(pkey = X509_get_pubkey(impl->x509)))
         OE_RAISE(OE_CRYPTO_ERROR);
 
-        /* If this is not an EC key */
-#if OECRYPTO_OPENSSL_VER < 3
+    /* If this is not an EC key */
     {
         EC_KEY* ec;
 
@@ -812,10 +811,6 @@ oe_result_t oe_cert_get_ec_public_key(
 
         EC_KEY_free(ec);
     }
-#else
-    if (EVP_PKEY_is_a(pkey, "EC"))
-        OE_RAISE_NO_TRACE(OE_CRYPTO_ERROR);
-#endif // OECRYPTO_OPENSSL_VER < 3
 
     /* Initialize the EC public key */
     oe_ec_public_key_init(public_key, pkey);
