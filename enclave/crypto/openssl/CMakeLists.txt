@@ -28,27 +28,10 @@ target_compile_definitions(oecryptoopenssl PRIVATE OECRYPTO_OPENSSL_VER=1)
 add_enclave_library(oecryptoopenssl_3 STATIC ${OECRYPTO_OPENSSL_SOURCE})
 
 target_compile_definitions(oecryptoopenssl_3 PRIVATE OECRYPTO_OPENSSL_VER=3)
-target_compile_options(oecryptoopenssl_3 PRIVATE "-Wno-deprecated-declarations")
+# target_compile_options(oecryptoopenssl_3 PRIVATE "-Wno-deprecated-declarations")
 
 set_source_files_properties(
-  ${PROJECT_SOURCE_DIR}/common/crypto/openssl/cmac.c
   ${PROJECT_SOURCE_DIR}/common/crypto/openssl/key.c init.c
-  PROPERTIES COMPILE_FLAGS "-Wno-deprecated-declarations")
-
-set_source_files_properties(
-#   ${PROJECT_SOURCE_DIR}/common/asn1.c
-#   ${PROJECT_SOURCE_DIR}/common/cert.c
-#   ${PROJECT_SOURCE_DIR}/common/kdf.c
-#   ${PROJECT_SOURCE_DIR}/common/crypto/openssl/asn1.c
-#   ${PROJECT_SOURCE_DIR}/common/crypto/openssl/cert.c
-#   ${PROJECT_SOURCE_DIR}/common/crypto/openssl/cmac.c
-#   ${PROJECT_SOURCE_DIR}/common/crypto/openssl/crl.c
-#   ${PROJECT_SOURCE_DIR}/common/crypto/openssl/ec.c
-#   ${PROJECT_SOURCE_DIR}/common/crypto/openssl/hmac.c
-  ${PROJECT_SOURCE_DIR}/common/crypto/openssl/key.c
-#   ${PROJECT_SOURCE_DIR}/common/crypto/openssl/rsa.c
-#   ${PROJECT_SOURCE_DIR}/common/crypto/openssl/sha.c
-#   init.c
   PROPERTIES COMPILE_FLAGS "-Wno-deprecated-declarations")
 
 maybe_build_using_clangw(oecryptoopenssl)
