@@ -35,8 +35,7 @@ add_executable(
   ../sha_tests.c
   ../tests.c
   ../utils.c)
-  
-target_compile_options(hostcrypto PRIVATE -Wall)
+
 add_dependencies(hostcrypto crypto_test_data)
 target_link_libraries(hostcrypto oehost)
 add_test(tests/crypto/host hostcrypto)
