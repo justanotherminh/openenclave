@@ -12,8 +12,43 @@ set(SYMCRYPT_PROVIDER_DIR
 configure_file(${SYMCRYPT_PROVIDER_DIR}/inc/p_scossl_base.h.in
                ${SYMCRYPT_PROVIDER_DIR}/inc/p_scossl_base.h)
 
-file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/SymCrypt
-     DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+# Use CACHE so that the variables can be globally accessible
+set(SYMCRYPT_VERSION_MAJOR
+    "103"
+    CACHE INTERNAL "")
+set(SYMCRYPT_VERSION_MINOR
+    "4"
+    CACHE INTERNAL "")
+set(SYMCRYPT_VERSION_PATCH
+    "2"
+    CACHE INTERNAL "")
+set(SYMCRYPT_VERSION
+    "${SYMCRYPT_VERSION_MAJOR}.${SYMCRYPT_VERSION_MINOR}.${SYMCRYPT_VERSION_PATCH}"
+    CACHE INTERNAL "")
+set(SYMCRYPT_NAME
+    "libsymcrypt.so.${SYMCRYPT_VERSION}"
+    CACHE INTERNAL "")
+# The linker only takes one number after ".so"
+set(SYMCRYPT_LINK_NAME
+    "libsymcrypt.so.${SYMCRYPT_VERSION_MAJOR}"
+    CACHE INTERNAL "")
+
+# Download the SymCrypt release package at config-time
+# The SymCrypt OpenSSL provider build requires the SymCrypt header
+include(FetchContent)
+FetchContent_Declare(
+  symcrypt_package_prov
+  SOURCE_DIR
+  ${CMAKE_CURRENT_BINARY_DIR}/SymCrypt
+  URL https://github.com/microsoft/SymCrypt/releases/download/v103.4.2/symcrypt-linux-oe_full-amd64-release-103.4.2-171f697.tar.gz
+  URL_HASH
+    SHA256=AA562EC53CFBA400A2A27027F480BC81DD9C530A5DCA32CC5C6834ED191D03FD)
+
+# Make the downloaded package globally available
+FetchContent_GetProperties(symcrypt_package_prov)
+if (NOT symcrypt_package_prov_POPULATED)
+  FetchContent_Populate(symcrypt_package_prov)
+endif ()
 
 add_enclave_library(
   oesymcryptprovider
