@@ -5,12 +5,24 @@
 #include <openenclave/internal/thread.h>
 #include <openenclave/internal/trace.h>
 #include <openssl/engine.h>
+#if OECRYPTO_OPENSSL_VER >= 3
+#include <openssl/core.h>
+#include <openssl/provider.h>
+#endif
 static oe_once_t _openssl_initialize_once;
 int _is_symcrypt_engine_available = 0;
+int _is_symcrypt_provider_available = 0;
 
 #define HOST_ENTROPY_TEST_SIZE 16
 
 /* Forward declarations */
+#if OECRYPTO_OPENSSL_VER >= 3
+int OSSL_provider_init(
+    const OSSL_CORE_HANDLE* handle,
+    const OSSL_DISPATCH* in,
+    const OSSL_DISPATCH** out,
+    void** provctx);
+#endif
 int SCOSSL_ENGINE_Initialize();
 int oe_sgx_get_additional_host_entropy(uint8_t*, size_t);
 
@@ -24,6 +36,22 @@ static int _initialize_symcrypt_engine()
 
     return (result == OE_SYMCRYPT_ENGINE_SUCCESS) ? 1 : 0;
 }
+
+#if OECRYPTO_OPENSSL_VER >= 3
+static int _initialize_symcrypt_provider()
+{
+    int result;
+
+    result = OSSL_PROVIDER_add_builtin(
+        NULL, "symcrypt_provider", OSSL_provider_init);
+    if (result != OE_SYMCRYPT_ENGINE_SUCCESS)
+        OE_TRACE_ERROR("SymCrypt provider initialization failed");
+
+    OSSL_PROVIDER_load(NULL, "symcrypt_provider");
+
+    return (result == OE_SYMCRYPT_ENGINE_SUCCESS) ? 1 : 0;
+}
+#endif
 
 #if OECRYPTO_OPENSSL_VER < 3
 static ENGINE* _rdrand_engine;
@@ -76,6 +104,8 @@ static void _initialize(void)
 {
 #if OECRYPTO_OPENSSL_VER >= 3
     OPENSSL_init_crypto(OPENSSL_INIT_NO_LOAD_CONFIG, NULL);
+
+    _is_symcrypt_provider_available = _initialize_symcrypt_provider();
 #endif
 
     /* _initialize_symcrypt_engine only registers the SymCrypt engine and

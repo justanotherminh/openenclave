@@ -201,7 +201,11 @@ foreach (testcase ${buildtests_3})
   get_testcase_name(${testcase} name "../../3rdparty/openssl/openssl_3/test/")
   add_enclave_test(tests/openssl/3-${name} openssl_host openssl-3-${name}_enc
                    ${name})
-  # OpenSSL_3 does not support symcrypt yet.
+  if ((NOT "${name}" IN_LIST UNSUPPORTED_SYMCRYPT_TESTS)
+      AND (ENABLE_SYMCRYPT_OPENSSL_TESTS))
+    add_enclave_test(tests/openssl/3-${name}_symcrypt openssl_host
+                     openssl-3-${name}_symcrypt_enc ${name})
+  endif ()
 endforeach (testcase)
 
 file(STRINGS "tests.unsupported.symcrypt" UNSUPPORTED_SYMCRYPT_TESTS)
@@ -211,6 +215,12 @@ macro (add_openssl_test OPENSSL3 TEST_NAME NAME)
   if (OPENSSL3)
     add_enclave_test(tests/openssl/3-${TEST_NAME} openssl_host
                      openssl-3-${NAME}_enc ${TEST_NAME} ${ARGN})
+
+    if ((NOT "${TEST_NAME}" IN_LIST UNSUPPORTED_SYMCRYPT_TESTS)
+        AND (ENABLE_SYMCRYPT_OPENSSL_TESTS))
+      add_enclave_test(tests/openssl/3-${TEST_NAME}_symcrypt openssl_host
+                       openssl-3-${NAME}_symcrypt_enc ${TEST_NAME} ${ARGN})
+    endif ()
   else ()
     add_enclave_test(tests/openssl/${TEST_NAME} openssl_host
                      openssl-${NAME}_enc ${TEST_NAME} ${ARGN})
@@ -227,6 +237,11 @@ endmacro (add_openssl_test)
 macro (add_openssl_tests_properties OPENSSL3 TEST_NAME)
   if (OPENSSL3)
     set_enclave_tests_properties(tests/openssl/3-${TEST_NAME} ${ARGN})
+    if ((NOT "${TEST_NAME}" IN_LIST UNSUPPORTED_SYMCRYPT_TESTS)
+        AND (ENABLE_SYMCRYPT_OPENSSL_TESTS))
+      set_enclave_tests_properties(tests/openssl/3-${TEST_NAME}_symcrypt
+                                   ${ARGN})
+    endif ()
   else ()
     set_enclave_tests_properties(tests/openssl/${TEST_NAME} ${ARGN})
     if ((NOT "${TEST_NAME}" IN_LIST UNSUPPORTED_SYMCRYPT_TESTS)
