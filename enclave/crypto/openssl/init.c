@@ -38,18 +38,44 @@ static int _initialize_symcrypt_engine()
 }
 
 #if OECRYPTO_OPENSSL_VER >= 3
+static OSSL_PROVIDER* _scossl_prov;
+
+static void _finalize_prov(void)
+{
+    if (_scossl_prov)
+    {
+        OSSL_PROVIDER_unload(_scossl_prov);
+        _scossl_prov = NULL;
+    }
+}
+
 static int _initialize_symcrypt_provider()
 {
-    int result;
+    int result = 0;
 
     result = OSSL_PROVIDER_add_builtin(
         NULL, "symcrypt_provider", OSSL_provider_init);
-    if (result != OE_SYMCRYPT_ENGINE_SUCCESS)
-        OE_TRACE_ERROR("SymCrypt provider initialization failed");
+    if (result != 1)
+        goto done;
 
-    OSSL_PROVIDER_load(NULL, "symcrypt_provider");
+    _scossl_prov = OSSL_PROVIDER_load(NULL, "symcrypt_provider");
+    if (!_scossl_prov)
+        goto done;
 
-    return (result == OE_SYMCRYPT_ENGINE_SUCCESS) ? 1 : 0;
+    if (atexit(_finalize_prov) != 0)
+        goto done;
+
+    result = 1;
+
+done:
+    if (result == 0)
+    {
+        OE_TRACE_ERROR("SCOSSL provider initialization failed");
+        if (_scossl_prov)
+            _finalize_prov();
+    }
+
+    return result;
 }
 #endif
 
